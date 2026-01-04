@@ -1,3 +1,5 @@
+#include "sr_lz4.h"
+
 void sr_lz4Decode()
 {
     sr_mkdir("lz4");
