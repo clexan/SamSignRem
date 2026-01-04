@@ -9,8 +9,8 @@ void SrProcessor::processFile(string base_name)
 {
     sr_mkdir("patched");
 
-    QString full_path = QString::fromStdStrings(sr_getCurrentPath()) + "/lz4/" + QString::fromStdStrings(base_name);
-    QString raw_path = QString::fromStdStrings(sr_getCurrentPath()) + "/patched/" + QString::fromStdStrings(base_name);
+    QString full_path = QString::fromStdString(sr_getCurrentPath()) + "/lz4/" + QString::fromStdString(base_name);
+    QString raw_path = QString::fromStdString(sr_getCurrentPath()) + "/patched/" + QString::fromStdString(base_name);
    
     img_file.setFileName(full_path);
     raw_file.setFileName(raw_path);
@@ -61,7 +61,7 @@ void SrProcessor::processFile(string base_name)
     img_file.close();
 }
 
-void SrProcessor::replaceBytes(const QByteArray &replaceBytes)
+void SrProcessor::replaceBytes(const QByteArray &replacement)
 {
     img_file.seek(0);
     curr_pos = 0;
