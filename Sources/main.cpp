@@ -23,7 +23,7 @@ void processLz4Stream(QString outputName)
 
 int main(int argc, char *argv[])
 {
-    cout << "Samsung Sign Remover V0.5.1\n";
+    cout << "Samsung Sign Remover V0.5.2\n";
 
     QDir currentDir = QDir::current();
     QStringList filters;
