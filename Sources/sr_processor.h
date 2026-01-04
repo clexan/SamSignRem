@@ -2,6 +2,8 @@
 #define SR_PROCESSOR_H
 
 #include "backend.h"
+#include <QFile>
+#include <QByteArray>
 
 class SrProcessor
 {
@@ -9,16 +11,16 @@ public:
     SrProcessor();
 
     void processFile(string base_name);
-    void fillPositions(string pattern);
-    void replaceBytes(string replacement);
+    void fillPositions(const QByteArray &pattern);
+    void replaceBytes(const QByteArray &replacement);
     void printAscii(int index, int len);
     void printHex(int index, int len);
     void rwUntilPosition(int64_t position);
-    void findPattInBlock(string *block, string pattern);
+    void findPattInBlock(const QByteArray &block, const QByteArray &pattern);
 
-    FILE *img_file = NULL;
-    FILE *raw_file = NULL;
-    char *f_buffer;
+    QFile img_file;
+    QFile raw_file;
+    QByteArray f_buffer;
     int64_t  curr_pos;
     vector<int64_t> positions;
 };
