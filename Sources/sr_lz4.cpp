@@ -15,10 +15,9 @@ void sr_lz4Decode()
         // Remove .lz4 extension for the output filename
         QString outputFile = "lz4/" + inputFile.left(inputFile.length() - 4);
         
-        // Use QProcess instead of system()
         QString program = "lz4";
         QStringList arguments;
-        // -d: decompression, -f: overwrite output without prompting
+        // -d: decompression, -f: overwrite
         arguments << "-d" << "-f" << inputFile << outputFile;
 
         QProcess process;
@@ -47,8 +46,10 @@ void sr_lz4Code()
 
         QString program = "lz4";
         QStringList arguments;
+        
+        // FIX: Add --content-size (Required by Odin) and -B6 (1MB Block Size)
         // -f: overwrite output
-        arguments << "-f" << inputFile << outputFile;
+        arguments << "-f" << "--content-size" << "-B6" << inputFile << outputFile;
 
         QProcess process;
         process.start(program, arguments);
