@@ -1,70 +1,64 @@
 #include "backend.h"
 
-// list all .img in current dir except recovery.img
+// List all .img in current dir except recovery.img
 vector<string> sr_findImgs(string dirname)
 {
     vector<string> ret;
-    string path = sr_getCurrentPath() + "\\" + dirname;
-    DIR    *dir = opendir(path.c_str());
+    
+    QDir dir = QDir::current();
+    
+    if (!dir.cd(QString::fromStdString(dirname))) {
+        cout << "Directory not found: " << dirname << endl;
+        return ret;
+    }
 
-    dirent *file = readdir(dir);
-    while( file )
-    {
-        string filename = file->d_name;
-        if( isValidImage(filename) )
-        {
+    QStringList filters;
+    filters << "*.img" << "*.bin";
+    dir.setNameFilters(filters);
+    dir.setFilter(QDir::Files | QDir::NoDotAndDotDot);
+
+    QFileInfoList list = dir.entryInfoList();
+    for (const QFileInfo &fileInfo : list) {
+        string filename = fileInfo.fileName().toStdString();
+        
+        if (isValidImage(filename)) {
             ret.push_back(filename);
         }
-        file = readdir(dir);
     }
-    closedir(dir);
 
     return ret;
 }
 
 string sr_getCurrentPath()
 {
-    char buffer[MAX_PATH];
-    GetCurrentDirectoryA(MAX_PATH, buffer);
-
-    string path(buffer);
-    return path;
+    return QDir::currentPath().toStdString();
 }
 
-// return true if its a valid image format
 int isValidImage(string name)
 {
-    if( name=="recovery.img" ||
-        name=="recovery.bin" )
-    {
+    QString qName = QString::fromStdString(name);
+    
+    if (qName == "recovery.img" || qName == "recovery.bin") {
         return 0;
     }
 
-    int have_img = name.find(".img");
-    int have_bin = name.find(".bin");
-    if( have_img==-1 && have_bin==-1 )
-    {
-        return 0;
+    if (qName.endsWith(".img") || qName.endsWith(".bin")) {
+        return 1;
     }
 
-    return 1;
+    return 0;
 }
 
 void sr_mkdir(string path)
 {
-    string cmd = "mkdir " + path + " >NUL  2>NUL";
-    system(cmd.c_str());
+    QDir dir;
+    if (!dir.mkpath(QString::fromStdString(path))) {
+        cout << "Failed to create directory: " << path << endl;
+    }
 }
 
 string sc_getLastDirectoryName(string address)
 {
-    size_t lastSeparator = address.find_last_of("\\");
-    if( lastSeparator!=std::string::npos )
-    {
-        return address.substr(lastSeparator + 1);
-    }
-    else
-    {
-        return address;
-    }
+    QDir dir(QString::fromStdString(address));
+    return dir.dirName().toStdString();
 }
