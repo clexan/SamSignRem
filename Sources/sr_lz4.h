@@ -2,6 +2,8 @@
 #define SR_LZ4_H
 
 #include "backend.h"
+#include <QProcess>
+#include <QStringList>
 
 void sr_lz4Decode();
 void sr_lz4Code();
