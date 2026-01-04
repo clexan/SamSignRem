@@ -13,15 +13,14 @@ bool sr_untar(QString archive, QString dest)
     QString program = "tar";
     QStringList arguments;
     
-    // -xf AP_*.tar.md5 / BL_*.tar.md5 -C ~/tmp_dir
-    // for samsung tarballs - extract into a temporary dir
+    // -xf <archive> -C <dest>
     arguments << "-xf" << archive << "-C" << dest;
 
     process.start(program, arguments);
     process.waitForFinished();
 
     if (process.exitCode() == 0) {
-        cout << " Extraction successful " << endl;
+        cout << "Extraction successful." << endl;
         return true;
     } else {
         cout << "Error extracting archive. Exit code: " << process.exitCode() << endl;
@@ -29,11 +28,11 @@ bool sr_untar(QString archive, QString dest)
         return false;
     }
 }
+
 void sr_tar(QString outputFilename)
 {
     cout << "Creating archive: " << outputFilename.toStdString() << endl;
 
-    // the 'tar' subdir should exist and contain the .lz4 files
     QDir tarDir("tar");
     if (!tarDir.exists()) {
         cout << "Error: 'tar' directory does not exist." << endl;
@@ -56,8 +55,9 @@ void sr_tar(QString outputFilename)
         return;
     }
     
-    // Create the archive in the parent directory (../outputFilename)
     QStringList arguments;
+    // FIX: Force 'ustar' format for Odin compatibility
+    arguments << "--format=ustar"; 
     arguments << "-cf" << "../" + outputFilename;
     arguments.append(files);
 
